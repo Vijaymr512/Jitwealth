@@ -1,102 +1,176 @@
-import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { useState } from "react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend
+);
 
 export default function Calculator() {
   const [amount, setAmount] = useState("");
-  const [years, setYears]   = useState("");
-  const [rate, setRate]     = useState("");
+  const [years, setYears] = useState("");
+  const [rate, setRate] = useState("");
+  const [chartData, setChartData] = useState(null);
 
-  const [finalValue, setFinalValue] = useState(0);
-  const [summary, setSummary]       = useState("");
+  const calculate = () => {
+    if (!amount || !years || !rate) return;
 
-  function calculate() {
-    const p = Number(amount);
-    const r = Number(rate) / 100;
-    const t = Number(years);
+    let labels = [];
+    let values = [];
 
-    if (!p || !r || !t) {
-      setSummary("Please fill all fields.");
-      setFinalValue(0);
-      return;
+    for (let i = 1; i <= years; i++) {
+      labels.push(`Year ${i}`);
+      const value = amount * Math.pow(1 + rate / 100, i);
+      values.push(value.toFixed(2));
     }
 
-    const final = p * Math.pow(1 + r, t);
-
-    setFinalValue(final.toFixed(2));
-    setSummary(
-      `In ${t} years, your investment could grow from ₹${p} to ₹${final.toFixed(
-        2
-      )}.`
-    );
-  }
+    setChartData({
+      labels,
+      datasets: [
+        {
+          label: "Investment Growth",
+          data: values,
+          borderColor: "#C9A24D",
+          backgroundColor: "rgba(201,162,77,0.15)",
+          tension: 0.4
+        }
+      ]
+    });
+  };
 
   return (
     <>
       <Navbar />
 
-      <section className="section fade-in">
-        <h1 style={{ textAlign: "center", fontSize: "38px" }}>
-          Investment <span style={{ color: "#B78425" }}>Calculator</span>
+      <section style={page}>
+        <h1 style={title}>
+          Investment <span style={{ color: "#C9A24D" }}>Calculator</span>
         </h1>
+        <p style={subtitle}>Visualize how your wealth grows over time</p>
 
-        <p className="subtitle" style={{ textAlign: "center" }}>
-          Visualize your wealth growth with our powerful compound interest calculator
-        </p>
+        <div style={container}>
+          {/* INPUT CARD */}
+          <div style={card}>
+            <h3>Investment Details</h3>
 
-        <div className="calc-container">
-
-          {/* LEFT CARD */}
-          <div className="calc-card">
-            <h3>Your Details</h3>
-            <p className="small">Enter investment info</p>
-
-            <label>Investment Amount</label>
             <input
-              className="input"
+              style={input}
               type="number"
+              placeholder="Investment Amount (₹)"
               value={amount}
-              onChange={e => setAmount(e.target.value)}
-              placeholder="₹ Enter amount"
+              onChange={(e) => setAmount(e.target.value)}
             />
 
-            <label>Duration (Years)</label>
             <input
-              className="input"
+              style={input}
               type="number"
+              placeholder="Years"
               value={years}
-              onChange={e => setYears(e.target.value)}
-              placeholder="Enter years"
+              onChange={(e) => setYears(e.target.value)}
             />
 
-            <label>Expected Return (%)</label>
             <input
-              className="input"
+              style={input}
               type="number"
+              placeholder="Expected Return (%)"
               value={rate}
-              onChange={e => setRate(e.target.value)}
-              placeholder="Expected %"
+              onChange={(e) => setRate(e.target.value)}
             />
 
-            <button className="btn primary" onClick={calculate}>
-              Calculate Returns
+            <button style={primaryBtn} onClick={calculate}>
+              Calculate
             </button>
           </div>
 
-          {/* RIGHT CARD */}
-          <div className="calc-card">
-            <h3>Results</h3>
-            <p className="small">Projected wealth growth</p>
-
-            <h2 id="final" style={{ marginTop: 25, color: "#B78425" }}>
-              ₹ {finalValue}
-            </h2>
-
-            <p id="summary" style={{ color: "#dcdcdc" }}>
-              {summary}
-            </p>
+          {/* GRAPH */}
+          <div style={resultCard}>
+            <h3>Wealth Growth</h3>
+            {chartData ? (
+              <Line data={chartData} />
+            ) : (
+              <p style={{ color: "#777" }}>
+                Enter values and click Calculate
+              </p>
+            )}
           </div>
         </div>
       </section>
     </>
   );
 }
+
+const page = {
+  background: "#ffffff",
+  minHeight: "100vh",
+  padding: "60px 20px",
+  textAlign: "center"
+};
+
+const title = {
+  fontSize: "42px",
+  fontWeight: "800",
+  color: "#111"
+};
+
+const subtitle = {
+  color: "#666",
+  marginBottom: "50px"
+};
+
+const container = {
+  maxWidth: "900px",
+  margin: "auto",
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "40px"
+};
+
+const card = {
+  background: "#fff",
+  padding: "35px",
+  borderRadius: "20px",
+  border: "2px solid #C9A24D",
+  boxShadow: "0 20px 40px rgba(0,0,0,0.05)"
+};
+
+const resultCard = {
+  background: "#fdfaf2",
+  padding: "40px",
+  borderRadius: "20px",
+  border: "2px solid #C9A24D"
+};
+
+const input = {
+  width: "100%",
+  padding: "14px",
+  margin: "15px 0",
+  borderRadius: "12px",
+  border: "1px solid #ddd",
+  fontSize: "16px"
+};
+
+const primaryBtn = {
+  marginTop: "20px",
+  width: "100%",
+  background: "#C9A24D",
+  color: "#000",
+  border: "none",
+  padding: "14px",
+  borderRadius: "30px",
+  fontWeight: "700",
+  cursor: "pointer"
+};

@@ -8,7 +8,7 @@ export default function Dashboard() {
   const email = localStorage.getItem("userEmail");
   const username = email ? email.split("@")[0] : "Trader";
 
-  // redirect if not logged in
+  // Protect dashboard
   useEffect(() => {
     if (!email) {
       navigate("/login");
@@ -19,37 +19,84 @@ export default function Dashboard() {
     <>
       <Navbar />
 
-      <section className="section fade-in">
-        <h1 style={{ textAlign: "center", color: "#B78425" }}>
-          Welcome, {username} 👋
-        </h1>
+      <section
+        style={{
+          minHeight: "90vh",
+          background: "#ffffff",
+          padding: "60px 20px"
+        }}
+      >
+        <div style={{ maxWidth: "1200px", margin: "auto" }}>
+          <h1
+            style={{
+              fontSize: "42px",
+              color: "#111",
+              marginBottom: "10px"
+            }}
+          >
+            Welcome,{" "}
+            <span style={{ color: "#C9A24D" }}>
+              {username}
+            </span>
+          </h1>
 
-        <p className="subtitle" style={{ textAlign: "center" }}>
-          Track your learning progress, investments, and achievements.
-        </p>
+          <p style={{ color: "#777", marginBottom: "40px" }}>
+            Track your learning progress, investments, and achievements.
+          </p>
 
-        <div className="dash-grid">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "30px"
+            }}
+          >
+            <DashCard
+              title="Courses Enrolled"
+              value="3"
+              desc="You’re actively improving your trading skills."
+            />
 
-          <div className="dash-card">
-            <h3>Total Courses Enrolled</h3>
-            <h2>3</h2>
-            <p>You’re actively improving your trading skills.</p>
+            <DashCard
+              title="Portfolio Value"
+              value="₹ 2,45,000"
+              desc="Based on your calculator results."
+            />
+
+            <DashCard
+              title="Success Rate"
+              value="95%"
+              desc="Your trading performance is excellent."
+            />
           </div>
-
-          <div className="dash-card">
-            <h3>Estimated Portfolio Value</h3>
-            <h2>₹ 2,45,000</h2>
-            <p>Based on your last investments & calculator results.</p>
-          </div>
-
-          <div className="dash-card">
-            <h3>Success Rate</h3>
-            <h2>95%</h2>
-            <p>Great job — keep learning and practicing!</p>
-          </div>
-
         </div>
       </section>
     </>
+  );
+}
+
+function DashCard({ title, value, desc }) {
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        border: "1px solid #C9A24D",
+        borderRadius: "20px",
+        padding: "28px",
+        boxShadow: "0 15px 35px rgba(0,0,0,0.05)"
+      }}
+    >
+      <h4 style={{ color: "#777", marginBottom: "12px" }}>
+        {title}
+      </h4>
+
+      <h2 style={{ color: "#C9A24D", fontSize: "34px", marginBottom: "12px" }}>
+        {value}
+      </h2>
+
+      <p style={{ color: "#555" }}>
+        {desc}
+      </p>
+    </div>
   );
 }

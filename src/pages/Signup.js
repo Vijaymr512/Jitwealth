@@ -1,70 +1,108 @@
+import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 export default function Signup() {
-  const [name, setName]     = useState("");
-  const [email, setEmail]   = useState("");
-  const [pass, setPass]     = useState("");
-  const [confirm, setConf]  = useState("");
-  const [error, setError]   = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-  function handleSignup() {
-    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  function handleSignup(e) {
+    e.preventDefault();
 
-    if(!name || !email || !pass || !confirm){
-      setError("Please fill all fields.");
+    if (!email.endsWith("@gmail.com")) {
+      alert("Only Gmail addresses are allowed");
       return;
     }
 
-    if(!gmailPattern.test(email)){
-      setError("Only Gmail addresses are allowed.");
-      return;
-    }
-
-    if(pass.length < 6){
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-
-    if(pass !== confirm){
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setError("Account created! Redirecting...");
-    localStorage.setItem("userEmail", email);
-    setTimeout(() => navigate("/dashboard"), 900);
+    navigate("/dashboard");
   }
 
   return (
     <>
       <Navbar />
 
-      <div className="auth-box">
-        <h2>Create Account</h2>
+      <section
+        style={{
+          minHeight: "85vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#ffffff"
+        }}
+      >
+        <div
+          style={{
+            width: "420px",
+            padding: "40px",
+            borderRadius: "20px",
+            border: "1px solid #C9A24D",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+            background: "#fff",
+            textAlign: "center"
+          }}
+        >
+          <h2 style={{ fontSize: "32px", marginBottom: "10px" }}>
+            Create Account
+          </h2>
 
-        <label>Full Name</label>
-        <input className="input" value={name} onChange={e=>setName(e.target.value)} />
+          <p style={{ color: "#777", marginBottom: "30px" }}>
+            Start your wealth journey with JitWealth
+          </p>
 
-        <label>Email (Gmail only)</label>
-        <input className="input" value={email} onChange={e=>setEmail(e.target.value)} />
+          <form onSubmit={handleSignup}>
+            <input
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={inputStyle}
+            />
 
-        <label>Password</label>
-        <input className="input" type="password" value={pass} onChange={e=>setPass(e.target.value)} />
+            <input
+              type="password"
+              placeholder="Create Password"
+              required
+              style={inputStyle}
+            />
 
-        <label>Confirm Password</label>
-        <input className="input" type="password" value={confirm} onChange={e=>setConf(e.target.value)} />
+            <button type="submit" style={primaryBtn}>
+              Sign Up
+            </button>
+          </form>
 
-        <button className="btn primary" style={{width:"100%"}} onClick={handleSignup}>
-          Sign Up
-        </button>
-
-        <p style={{color: error.includes("created") ? "#7CFF8B" : "#ff6b6b"}}>
-          {error}
-        </p>
-      </div>
+          <p style={{ marginTop: "20px", color: "#555" }}>
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              style={{ color: "#C9A24D", cursor: "pointer", fontWeight: "600" }}
+            >
+              Login
+            </span>
+          </p>
+        </div>
+      </section>
     </>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px",
+  marginBottom: "18px",
+  borderRadius: "10px",
+  border: "1px solid #C9A24D",
+  fontSize: "15px"
+};
+
+const primaryBtn = {
+  width: "100%",
+  background: "#C9A24D",
+  color: "#000",
+  padding: "14px",
+  borderRadius: "30px",
+  border: "none",
+  fontSize: "16px",
+  fontWeight: "700",
+  cursor: "pointer"
+};
