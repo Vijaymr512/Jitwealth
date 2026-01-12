@@ -1,64 +1,111 @@
+import Navbar from "../components/Navbar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 
 export default function Login() {
-  const [email, setEmail]   = useState("");
-  const [password, setPass] = useState("");
-  const [error, setError]   = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
-  function handleLogin() {
-    const gmailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  function handleLogin(e) {
+    e.preventDefault();
 
-    if(!email || !password){
-      setError("Please fill all fields.");
+    if (!email.endsWith("@gmail.com")) {
+      alert("Only Gmail addresses are allowed");
       return;
     }
 
-    if(!gmailPattern.test(email)){
-      setError("Only Gmail addresses are allowed (example@gmail.com).");
-      return;
-    }
-
-    setError("Login successful! Redirecting...");
+    // Save user
     localStorage.setItem("userEmail", email);
-    setTimeout(() => navigate("/dashboard"), 900);
+
+    navigate("/dashboard");
   }
 
   return (
     <>
       <Navbar />
 
-      <div className="auth-box">
-        <h2>Login</h2>
+      <section
+        style={{
+          minHeight: "85vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#ffffff"
+        }}
+      >
+        <div
+          style={{
+            width: "420px",
+            padding: "40px",
+            borderRadius: "20px",
+            border: "1px solid #C9A24D",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
+            background: "#fff",
+            textAlign: "center"
+          }}
+        >
+          <h2 style={{ fontSize: "32px", marginBottom: "10px" }}>
+            Welcome Back
+          </h2>
 
-        <label>Email</label>
-        <input
-          className="input"
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="example@gmail.com"
-        />
+          <p style={{ color: "#777", marginBottom: "30px" }}>
+            Login to your JitWealth account
+          </p>
 
-        <label>Password</label>
-        <input
-          className="input"
-          type="password"
-          value={password}
-          onChange={e => setPass(e.target.value)}
-          placeholder="Enter password"
-        />
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={inputStyle}
+            />
 
-        <button className="btn primary" style={{width:"100%"}} onClick={handleLogin}>
-          Login
-        </button>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              required
+              style={inputStyle}
+            />
 
-        <p style={{color: error.includes("successful") ? "#7CFF8B" : "#ff6b6b"}}>
-          {error}
-        </p>
-      </div>
+            <button type="submit" style={primaryBtn}>
+              Login
+            </button>
+          </form>
+
+          <p style={{ marginTop: "20px", color: "#555" }}>
+            Don’t have an account?{" "}
+            <span
+              onClick={() => navigate("/signup")}
+              style={{ color: "#C9A24D", cursor: "pointer", fontWeight: "600" }}
+            >
+              Sign Up
+            </span>
+          </p>
+        </div>
+      </section>
     </>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "14px",
+  marginBottom: "18px",
+  borderRadius: "10px",
+  border: "1px solid #C9A24D",
+  fontSize: "15px"
+};
+
+const primaryBtn = {
+  width: "100%",
+  background: "#C9A24D",
+  color: "#000",
+  padding: "14px",
+  borderRadius: "30px",
+  border: "none",
+  fontSize: "16px",
+  fontWeight: "700",
+  cursor: "pointer"
+};

@@ -1,8 +1,22 @@
-body{
-  margin:0;
-  font-family:Inter,system-ui,Arial;
-  background:linear-gradient(120deg,#061436,#0A2048);
-  color:white;
+:root {
+  --jw-white: #ffffff;
+  --jw-soft-white: #fafafa;
+  --jw-gold: #C9A24D;
+  --jw-gold-dark: #A8842A;
+  --jw-text-dark: #1c1c1c;
+  --jw-text-muted: #6f6f6f;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, system-ui, Arial;
+  background: var(--jw-white);
+  color: var(--jw-text-dark);
 }
 
 code {
@@ -144,4 +158,19 @@ code {
 
 .details-box ul li{
   margin:6px 0;
+}
+
+@media (max-width: 900px) {
+  section > div {
+    grid-template-columns: 1fr !important;
+  }
+
+  h1 {
+    font-size: 42px !important;
+  }
+
+  img {
+    width: 180px !important;
+    margin-top: 30px;
+  }
 }
