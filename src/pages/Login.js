@@ -6,19 +6,20 @@ export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
-  function handleLogin(e) {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+  e.preventDefault();
 
-    if (!email.endsWith("@gmail.com")) {
-      alert("Only Gmail addresses are allowed");
-      return;
-    }
-
-    // Save user
-    localStorage.setItem("userEmail", email);
-
-    navigate("/dashboard");
+  if (!email.endsWith("@gmail.com")) {
+    alert("Only @gmail.com allowed");
+    return;
   }
+
+  // save login
+  localStorage.setItem("userEmail", email);
+
+  // go to app landing
+  navigate("/app");
+};
 
   return (
     <>
@@ -52,7 +53,7 @@ export default function Login() {
             Login to your JitWealth account
           </p>
 
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleSubmit}>
             <input
               type="email"
               placeholder="Enter Email"

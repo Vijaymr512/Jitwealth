@@ -6,16 +6,17 @@ export default function Signup() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
-  function handleSignup(e) {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+  e.preventDefault();
 
-    if (!email.endsWith("@gmail.com")) {
-      alert("Only Gmail addresses are allowed");
-      return;
-    }
-
-    navigate("/dashboard");
+  if (!email.endsWith("@gmail.com")) {
+    alert("Only @gmail.com allowed");
+    return;
   }
+
+  localStorage.setItem("userEmail", email);
+  navigate("/app");
+};
 
   return (
     <>
@@ -49,7 +50,7 @@ export default function Signup() {
             Start your wealth journey with JitWealth
           </p>
 
-          <form onSubmit={handleSignup}>
+          <form onSubmit={handleSubmit}>
             <input
               type="email"
               placeholder="Enter Email"
