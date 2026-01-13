@@ -1,6 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  // simple login check (you can improve later)
+  const isLoggedIn = !!localStorage.getItem("userEmail");
+
+  const handleBrandClick = () => {
+    if (isLoggedIn) {
+      navigate("/app");
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <nav
       style={{
@@ -12,25 +25,37 @@ export default function Navbar() {
         alignItems: "center"
       }}
     >
-      {/* Clickable Brand */}
-      <Link
-        to="/"
+      {/* Brand */}
+      <span
+        onClick={handleBrandClick}
         style={{
           fontWeight: "800",
           fontSize: "35px",
-          textDecoration: "none",
           color: "#111",
           cursor: "pointer"
         }}
       >
         JitWealth
-      </Link>
+      </span>
 
+      {/* Right side buttons */}
       <div style={{ display: "flex", gap: "12px" }}>
-        <NavBtn to="/courses">Courses</NavBtn>
-        <NavBtn to="/calculator">Calculator</NavBtn>
-        <NavBtn to="/login">Login</NavBtn>
-        <GoldBtn to="/signup">Sign Up</GoldBtn>
+        {isLoggedIn ? (
+  <>
+    <NavBtn to="/app">Home</NavBtn>
+    <NavBtn to="/courses">Courses</NavBtn>
+    <NavBtn to="/calculator">Calculator</NavBtn>
+    <GoldBtn to="/dashboard">Profile</GoldBtn>
+    <LogoutBtn />
+  </>
+) : (
+  <>
+    <NavBtn to="/courses">Courses</NavBtn>
+    <NavBtn to="/calculator">Calculator</NavBtn>
+    <NavBtn to="/login">Login</NavBtn>
+    <GoldBtn to="/signup">Sign Up</GoldBtn>
+  </>
+)}
       </div>
     </nav>
   );
@@ -71,5 +96,31 @@ function GoldBtn({ to, children }) {
     >
       {children}
     </Link>
+  );
+}
+
+function LogoutBtn() {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("userEmail");
+    navigate("/");
+    window.location.reload();
+  };
+
+  return (
+    <button
+      onClick={logout}
+      style={{
+        padding: "8px 16px",
+        borderRadius: "20px",
+        border: "1px solid #C9A24D",
+        background: "transparent",
+        fontWeight: "600",
+        cursor: "pointer"
+      }}
+    >
+      Logout
+    </button>
   );
 }
