@@ -1,28 +1,96 @@
 import AppNavbar from "../components/AppNavbar";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ScrollDots from "../components/ScrollDots";
+import ContactFooter from "../components/ContactFooter";
 
 export default function AppHome() {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState(null);
+  const [activeSection, setActiveSection] = useState("home");
+  const userEmail = localStorage.getItem("userEmail") || "user@jitwealth.com";
+  const userName = userEmail.split("@")[0];
+
+  useEffect(() => {
+    const sectionIds = ["home", "courses", "calculator", "contact"];
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
-      <AppNavbar />
+      <AppNavbar activeSection={activeSection} />
+      <ScrollDots active={activeSection} />
 
-      <div style={{ marginTop: "100px" }}>
-
+      <div
+        style={{
+          marginTop: "120px",
+          background: "linear-gradient(180deg, #fdfaf3, #ffffff)",
+          paddingBottom: "200px"
+        }}
+      >
         {/* HOME */}
         <Section
           id="home"
-          title="JitWealth Home"
-          desc="Jit Wealth helps traders and investors understand the Indian stock market with clarity. Learn proven strategies, insights, and tools to grow your wealth consistently."
+          title={`Welcome, ${userName}`}
+          desc={
+            <>
+              <div style={{ fontSize: "16px", marginBottom: "12px", color: "#777" }}>
+                {userEmail}
+              </div>
+
+              {/* STAT CARDS */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, 1fr)",
+                  gap: "20px",
+                  margin: "30px 0"
+                }}
+              >
+                <StatCard
+                  title="Courses Enrolled"
+                  value="3"
+                  text="You're actively improving your skills."
+                />
+                <StatCard
+                  title="Portfolio Value"
+                  value="₹ 2,45,000"
+                  text="Based on your calculator results."
+                />
+                <StatCard
+                  title="Success Rate"
+                  value="95%"
+                  text="Your trading performance is excellent."
+                />
+              </div>
+
+              <div style={{ color: "#555", maxWidth: "700px", margin: "0 auto" }}>
+                Jit Wealth helps traders and investors understand the Indian stock market with clarity.
+                Learn proven strategies, insights, and tools to grow your wealth consistently.
+              </div>
+            </>
+          }
           arrow
           active={activeSection === "home"}
-          onClick={() => {
-            setActiveSection("home");
-            document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" });
-          }}
+          onClick={() =>
+            document.getElementById("courses")?.scrollIntoView({ behavior: "smooth" })
+          }
         />
 
         {/* COURSES */}
@@ -32,10 +100,7 @@ export default function AppHome() {
           desc="Structured programs from beginner to advanced trading."
           action="View Courses"
           active={activeSection === "courses"}
-          onClick={() => {
-            setActiveSection("courses");
-            navigate("/courses");
-          }}
+          onClick={() => navigate("/courses")}
         />
 
         {/* CALCULATOR */}
@@ -45,41 +110,20 @@ export default function AppHome() {
           desc="Plan your investments and visualize future wealth."
           action="Open Calculator"
           active={activeSection === "calculator"}
-          onClick={() => {
-            setActiveSection("calculator");
-            navigate("/calculator");
-          }}
+          onClick={() => navigate("/calculator")}
         />
 
-        {/* MARKET */}
-        <Section
-          id="market"
-          title="Market Tools"
-          desc="Live tools, signals, and analytics coming soon."
-          action="Coming Soon"
-          disabled
-          active={activeSection === "market"}
-        />
-
-        {/* CONTACT */}
-        <Section
-          id="contact"
-          title="Contact JitWealth"
-          desc="Need help? Reach us at support@jitwealth.in"
-          action="Mail Us"
-          active={activeSection === "contact"}
-          onClick={() => {
-            setActiveSection("contact");
-            window.location.href = "mailto:support@jitwealth.in";
-          }}
-        />
-
+        <div id="contact">
+  <ContactFooter />
+</div>
       </div>
     </>
   );
 }
 
-function Section({ id, title, desc, action, onClick, disabled, arrow }) {
+/* ---------------- SECTION COMPONENT ---------------- */
+
+function Section({ id, title, desc, action, onClick, disabled, arrow, active }) {
   return (
     <div
       id={id}
@@ -91,52 +135,31 @@ function Section({ id, title, desc, action, onClick, disabled, arrow }) {
       }}
     >
       <div
-        onClick={!disabled ? onClick : null}
+        onClick={!disabled ? onClick : undefined}
         style={{
-          background: "#fff",
+          background: active ? "#FFF4D6" : "#ffffff",
           padding: "60px",
           borderRadius: "24px",
           width: "80%",
           maxWidth: "900px",
           textAlign: "center",
           cursor: disabled ? "not-allowed" : "pointer",
-          border: "1px solid #eee",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
-          transition: "0.35s ease",
-        }}
-        onMouseEnter={(e) => {
-          if (!disabled) {
-            e.currentTarget.style.background = "#FFF7E1";
-            e.currentTarget.style.border = "1px solid #C9A24D";
-            e.currentTarget.style.transform = "translateY(-10px)";
-            e.currentTarget.style.boxShadow = "0 35px 70px rgba(201,162,77,0.25)";
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#fff";
-          e.currentTarget.style.border = "1px solid #eee";
-          e.currentTarget.style.transform = "translateY(0)";
-          e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.06)";
+          border: active ? "2px solid #C9A24D" : "1px solid #eee",
+          boxShadow: active
+            ? "0 30px 60px rgba(201,162,77,0.35)"
+            : "0 20px 50px rgba(0,0,0,0.12)",
+          transition: "0.4s"
         }}
       >
         <h1 style={{ fontSize: "48px", color: "#C9A24D" }}>{title}</h1>
 
-        <p style={{ marginTop: "20px", fontSize: "18px", color: "#555" }}>
+        <div style={{ marginTop: "20px", fontSize: "18px", color: "#555" }}>
           {desc}
-        </p>
+        </div>
 
-        {/* Action Area */}
         <div style={{ marginTop: "40px" }}>
           {arrow ? (
-            <div
-              style={{
-                fontSize: "42px",
-                color: "#C9A24D",
-                animation: "bounce 1.5s infinite"
-              }}
-            >
-              ↓
-            </div>
+            <div style={{ fontSize: "42px", color: "#C9A24D" }}>↓</div>
           ) : (
             <div
               style={{
@@ -153,6 +176,27 @@ function Section({ id, title, desc, action, onClick, disabled, arrow }) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function StatCard({ title, value, text }) {
+  return (
+    <div
+      style={{
+        background: "#ffffff",
+        borderRadius: "18px",
+        padding: "24px",
+        border: "1px solid #f0e0b5",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+        textAlign: "center"
+      }}
+    >
+      <h4 style={{ fontSize: "14px", color: "#888" }}>{title}</h4>
+      <div style={{ fontSize: "28px", fontWeight: "800", color: "#C9A24D", margin: "10px 0" }}>
+        {value}
+      </div>
+      <p style={{ fontSize: "13px", color: "#666" }}>{text}</p>
     </div>
   );
 }
