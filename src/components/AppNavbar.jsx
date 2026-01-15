@@ -1,10 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AppNavbar({ activeSection }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const go = (path) => {
-    navigate(path);
+  const go = (path) => navigate(path);
+
+  const isActive = (key) => {
+    if (location.pathname === "/app" && key === "home") return true;
+    if (location.pathname === "/courses" && key === "courses") return true;
+    if (location.pathname === "/calculator" && key === "calculator") return true;
+    return activeSection === key;
   };
 
   return (
@@ -13,7 +19,7 @@ export default function AppNavbar({ activeSection }) {
         position: "fixed",
         top: 0,
         width: "100%",
-        background: "#fff",
+        background: "#ffffff",
         borderBottom: "1px solid #eee",
         padding: "14px 60px",
         display: "flex",
@@ -22,28 +28,37 @@ export default function AppNavbar({ activeSection }) {
         zIndex: 1000
       }}
     >
-      {/* LOGO */}
+      {/* BRAND */}
       <div
-        style={{ fontWeight: "800", fontSize: "26px", cursor: "pointer" }}
         onClick={() => go("/app")}
+        style={{
+          fontWeight: "800",
+          fontSize: "26px",
+          cursor: "pointer",
+          color: "#111"
+        }}
       >
         JitWealth
       </div>
 
-      {/* NAV BUTTONS */}
+      {/* NAV */}
       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <NavBtn active={activeSection === "home"} onClick={() => go("/app")}>
+        <NavBtn active={isActive("home")} onClick={() => go("/app")}>
           Home
         </NavBtn>
 
-        <NavBtn onClick={() => go("/courses")}>Courses</NavBtn>
+        <NavBtn active={isActive("courses")} onClick={() => go("/courses")}>
+          Courses
+        </NavBtn>
 
-        <NavBtn onClick={() => go("/calculator")}>Calculator</NavBtn>
+        <NavBtn active={isActive("calculator")} onClick={() => go("/calculator")}>
+          Calculator
+        </NavBtn>
 
         {/* PROFILE ICON */}
         <div
-          onClick={() => go("/dashboard")}
           title="Profile"
+          onClick={() => go("/dashboard")}
           style={{
             width: "38px",
             height: "38px",
@@ -61,10 +76,12 @@ export default function AppNavbar({ activeSection }) {
           👤
         </div>
 
-        <GoldBtn onClick={() => {
-          localStorage.clear();
-          go("/");
-        }}>
+        <GoldBtn
+          onClick={() => {
+            localStorage.clear();
+            go("/");
+          }}
+        >
           Logout
         </GoldBtn>
       </div>
@@ -72,7 +89,7 @@ export default function AppNavbar({ activeSection }) {
   );
 }
 
-/* ---------------- BUTTONS ---------------- */
+/* ---------- Buttons ---------- */
 
 function NavBtn({ children, onClick, active }) {
   return (
@@ -85,7 +102,8 @@ function NavBtn({ children, onClick, active }) {
         borderRadius: "20px",
         padding: "8px 16px",
         cursor: "pointer",
-        fontWeight: "600"
+        fontWeight: "600",
+        transition: "0.25s"
       }}
     >
       {children}

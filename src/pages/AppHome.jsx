@@ -1,8 +1,11 @@
-import AppNavbar from "../components/AppNavbar";
+import AppNavbar from "../components/AppNavbar.jsx";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ScrollDots from "../components/ScrollDots";
 import ContactFooter from "../components/ContactFooter";
+import FloatingWhatsApp from "../components/FloatingWhatsApp";
+import BackgroundVideo from "../components/BackgroundVideo";
+import GlassOverlay from "../components/GlassOverlay";
 
 export default function AppHome() {
   const navigate = useNavigate();
@@ -40,7 +43,6 @@ export default function AppHome() {
       <div
         style={{
           marginTop: "120px",
-          background: "linear-gradient(180deg, #fdfaf3, #ffffff)",
           paddingBottom: "200px"
         }}
       >
@@ -115,6 +117,11 @@ export default function AppHome() {
 
         <div id="contact">
   <ContactFooter />
+  <FloatingWhatsApp />
+  <BackgroundVideo />
+  <GlassOverlay />
+    {/* Everything else below */}
+  <AppNavbar activeSection={activeSection} />
 </div>
       </div>
     </>
@@ -137,7 +144,6 @@ function Section({ id, title, desc, action, onClick, disabled, arrow, active }) 
       <div
         onClick={!disabled ? onClick : undefined}
         style={{
-          background: active ? "#FFF4D6" : "#ffffff",
           padding: "60px",
           borderRadius: "24px",
           width: "80%",
@@ -166,7 +172,6 @@ function Section({ id, title, desc, action, onClick, disabled, arrow, active }) 
                 display: "inline-block",
                 padding: "14px 34px",
                 borderRadius: "30px",
-                background: disabled ? "#ddd" : "#C9A24D",
                 color: "#000",
                 fontWeight: "700"
               }}
@@ -184,7 +189,6 @@ function StatCard({ title, value, text }) {
   return (
     <div
       style={{
-        background: "#ffffff",
         borderRadius: "18px",
         padding: "24px",
         border: "1px solid #f0e0b5",
