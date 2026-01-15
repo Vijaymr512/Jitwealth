@@ -45,7 +45,6 @@ export default function Calculator() {
           label: "Investment Growth",
           data: values,
           borderColor: "#C9A24D",
-          backgroundColor: "rgba(201,162,77,0.15)",
           tension: 0.4
         }
       ]
@@ -114,7 +113,6 @@ export default function Calculator() {
 }
 
 const page = {
-  background: "#ffffff",
   minHeight: "100vh",
   padding: "60px 20px",
   textAlign: "center"
@@ -140,7 +138,6 @@ const container = {
 };
 
 const card = {
-  background: "#fff",
   padding: "35px",
   borderRadius: "20px",
   border: "2px solid #C9A24D",
@@ -148,7 +145,6 @@ const card = {
 };
 
 const resultCard = {
-  background: "#fdfaf2",
   padding: "40px",
   borderRadius: "20px",
   border: "2px solid #C9A24D"
@@ -166,7 +162,6 @@ const input = {
 const primaryBtn = {
   marginTop: "20px",
   width: "100%",
-  background: "#C9A24D",
   color: "#000",
   border: "none",
   padding: "14px",
